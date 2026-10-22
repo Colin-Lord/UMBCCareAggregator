@@ -1,0 +1,31 @@
+/* Define Colors to reuse */
+:root {
+    --gold: #fdb515;
+    --black: #000000;
+    --red: #da2128;
+    --light-grey: #c7c8ca;
+    --brown: #a67a05;
+    --dark-grey: #636466;
+
+}
+
+/* Navbar background */
+.navbar {
+    background-color: var(--black);
+}
+
+/* Website name */
+.navbar-brand {
+    color: var(--gold);
+}
+
+/* Navigation links */
+.navbar .nav-link {
+    color: #fffbfb;
+}
+
+/* Darken links on hover */
+.navbar .nav-link:hover {
+    color: #000000;
+    background-color: #e0e0e0;
+}
