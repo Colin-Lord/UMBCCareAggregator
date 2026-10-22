@@ -21,7 +21,10 @@
         <div class="container-fluid">
 
             <!-- Website Name (Left) -->
-            <a class="navbar-brand" href="{% url 'home' %}">UMBC</a>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <img src="{% static 'aggregator/images/umbc_crest.png' %}" alt="" height="40">
+                <span>UMBC</span>
+            </a>
 
             <!-- Mobile Menu Button -->
             <button class="navbar-toggler" type="button"

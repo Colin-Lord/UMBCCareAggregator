@@ -15,7 +15,9 @@
 }
 
 /* Website name */
-.navbar-brand {
+.navbar-brand,
+.navbar-brand:hover,
+.navbar-brand:focus {
     color: var(--gold);
 }
 
@@ -114,6 +116,23 @@
 .login-message {
     margin-top: 15px;
     font-size: clamp(14px, 2vw, 20px);
+}
+
+/* Project description */
+.login-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.login-link:hover,
+.login-link:focus-visible {
+    color: var(--black);
+    background-color: var(--gold);
+    text-decoration: underline;
 }
 
 /* Project description */
