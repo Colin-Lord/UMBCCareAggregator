@@ -8,7 +8,7 @@
     --dark-grey: #636466;
 
 }
-
+/*************************************************************************/
 /* Navbar background */
 .navbar {
     background-color: var(--black);
@@ -28,4 +28,200 @@
 .navbar .nav-link:hover {
     color: #000000;
     background-color: #e0e0e0;
+}
+/******************************************************************************************/
+/* Button colors */
+.btn-submit {
+    --bs-btn-color: var(--black);
+    --bs-btn-bg: var(--gold);
+    --bs-btn-border-color: var(--black);
+
+    --bs-btn-hover-color: var(--gold);
+    --bs-btn-hover-bg: var(--black);
+    --bs-btn-hover-border-color: var(--gold);
+
+    --bs-btn-active-color: var(--gold);
+    --bs-btn-active-bg: var(--black);
+    --bs-btn-active-border-color: var(--gold);
+}
+
+/*************************************************************************************/
+/* Form dropdown */
+.form-select {
+    color: white;
+    background-color: var(--black);
+    border: 1px solid var(--gold);
+}
+
+/* Dropdown hover */
+.form-select:hover {
+    border-color: var(--gold);
+    cursor: pointer;
+}
+
+/* Dropdown focus */
+.form-select:focus {
+    color: var(--gold);
+    background-color: var(--black);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 0.25rem rgba(253, 181, 21, 0.25);
+}
+
+/* Dropdown options */
+.form-select option {
+    color: white;
+    background-color: var(--dark-grey);
+}
+
+/************************************************************************/
+/* Home page layout */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 80vh;
+    padding: 60px 20px;
+}
+
+/* Home page layout */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 80vh;
+    padding: 60px 20px;
+}
+
+/* Welcome box */
+.welcome-box {
+    border: 2px solid var(--black);
+    border-radius: 20px;
+    padding: clamp(20px, 4vw, 50px);
+    width: 90%;
+    max-width: 700px;
+}
+
+/* Welcome text */
+.welcome-box h1 {
+    font-size: clamp(24px, 4vw, 48px);
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Login message */
+.login-message {
+    margin-top: 15px;
+    font-size: clamp(14px, 2vw, 20px);
+}
+
+/* Project description */
+.project-description {
+    margin-top: 100px;
+    font-size: clamp(16px, 2.5vw, 20px);
+}
+
+/************************************************************************/
+/* Contact page layout */
+.contact-container {
+    display: flex;
+    justify-content: center;
+    padding: clamp(20px, 5vw, 60px);
+}
+
+/* Contact form */
+.contact-container form {
+    width: 90%;
+    max-width: 700px;
+}
+
+/* Form label */
+.contact-container .form-label {
+    font-size: clamp(16px, 2vw, 22px);
+    margin-bottom: 15px;
+}
+
+/* Feedback text box */
+.feedback-box {
+    width: 100%;
+    height: clamp(200px, 30vh, 400px);
+    resize: vertical;
+
+    color: var(--black);
+    background-color: white;
+    border: 2px solid var(--black);
+    border-radius: 20px;
+
+    padding: 20px;
+    font-size: clamp(14px, 1.5vw, 18px);
+}
+
+/* Feedback focus */
+.feedback-box:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 0.25rem rgba(253, 181, 21, 0.25);
+}
+
+/* Submit button alignment */
+.contact-container .btn-submit {
+    display: block;
+    margin-left: auto;
+    min-width: 120px;
+}
+
+/**********************************************************************/
+/* Feedback confirmation layout */
+.feedback-success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    width: 90%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: clamp(40px, 6vw, 80px) 20px;
+}
+
+/* Thank you message */
+.feedback-success-message {
+    font-size: clamp(18px, 2.5vw, 26px);
+    max-width: 600px;
+    margin-bottom: 40px;
+}
+
+/* Smiley face */
+.smiley-face {
+    width: clamp(120px, 18vw, 180px);
+    aspect-ratio: 1;
+
+    border: 3px solid var(--black);
+    border-radius: 50%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Smiley eyes */
+.smiley-eyes {
+    font-size: clamp(24px, 3vw, 36px);
+    line-height: 1;
+}
+
+/* Smiley mouth */
+.smiley-mouth {
+    width: 45%;
+    height: 25%;
+    border-bottom: 3px solid var(--black);
+    border-radius: 0 0 50% 50%;
+}
+
+/* More feedback button */
+.more-feedback-btn {
+    align-self: flex-end;
+    margin-top: 30px;
 }

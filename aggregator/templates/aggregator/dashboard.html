@@ -5,4 +5,13 @@
 {% block content %}
     <h1>Dashboard Page</h1>
     <p>This is dashboard page</p>
+    <div class="mb-3">
+    <label for="filter_select" class="form-label">Filter:</label>
+
+    <select class="form-select w-25" id="filter_select" name="filter" required>
+        <option value="" selected disabled>Choose a filter</option>
+        <option value="date">Date</option>
+        <option value="student_type">Student Type</option>
+    </select>
+</div>
 {% endblock %}

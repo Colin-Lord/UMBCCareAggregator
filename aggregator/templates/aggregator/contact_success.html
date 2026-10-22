@@ -1,0 +1,23 @@
+{% extends "aggregator/base.html" %}
+
+{% block title %}Feedback Submitted{% endblock %}
+
+{% block content %}
+<div class="feedback-success-container">
+
+    <p class="feedback-success-message">
+        Thank you for your feedback! The developer team will
+        work hard to help fix your issue.
+    </p>
+
+    <div class="smiley-face">
+        <span class="smiley-eyes">• &nbsp; •</span>
+        <span class="smiley-mouth"></span>
+    </div>
+
+    <a href="{% url 'contact' %}" class="btn btn-submit more-feedback-btn">
+        More Feedback?
+    </a>
+
+</div>
+{% endblock %}
