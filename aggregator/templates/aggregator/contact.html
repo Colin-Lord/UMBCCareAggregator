@@ -3,6 +3,28 @@
 {% block title %}Contact{% endblock %}
 
 {% block content %}
-    <h1>Contact Page</h1>
-    <p>This is the contact page.</p>
+<div class="contact-container">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="feedback_input" class="form-label">
+                Having trouble with the website?
+            </label>
+
+            <textarea
+                class="form-control feedback-box"
+                id="feedback_input"
+                name="feedback"
+                placeholder="Enter feedback or criticism"
+                required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-submit">
+            Submit
+        </button>
+    </form>
+
+</div>
 {% endblock %}
