@@ -31,7 +31,7 @@ def office(request):
     return render(request, "aggregator/office.html")
 
 def login(request):
-    return render(request, "aggregator/login.html")
+    return render(request, "accounts/login.html")
 
 def users(request):
     return render(request, "aggregator/users.html")
