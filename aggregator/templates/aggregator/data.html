@@ -7,7 +7,7 @@
     <p class="text-muted">Upload monthly metrics to use in your dashboard.</p>
 
     {% for message in messages %}
-        <div class="alert alert-success" role="status">{{ message }}</div>
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="status">{{ message }}</div>
     {% endfor %}
 
     <section class="card mb-4">
@@ -49,6 +49,23 @@
             </table>
         </div>
     </section>
+    {% if can_clear and record_count %}
+    <section class="card border-danger mb-4">
+        <div class="card-body">
+            <h2 class="h4">Clear uploaded data</h2>
+            <p>{% if user.is_superuser %}This permanently deletes all {{ record_count }} stored metric records across every office.{% else %}This permanently deletes all {{ record_count }} stored metric records for {{ user.office.name }}.{% endif %} This includes all records, not just the 50 shown above. Import history, offices, user accounts, and source JSON files will be kept.</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="clear">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="confirm-clear" name="confirm_clear" value="yes" required>
+                    <label class="form-check-label" for="confirm-clear">I understand these metric records will be permanently deleted.</label>
+                </div>
+                <button type="submit" class="btn btn-danger">{% if user.is_superuser %}Clear all uploaded data{% else %}Clear my office's data{% endif %}</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
     <section class="mb-4">
         <h2 class="h4">Recent imports</h2>
         <ul class="list-group">{% for item in imports %}

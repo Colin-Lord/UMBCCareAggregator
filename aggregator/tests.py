@@ -102,3 +102,58 @@ class DataImportTests(TestCase):
         with self.assertRaises(ValidationError):
             import_records([changed], self.admin, 'bad.json')
         self.assertEqual(DataImport.objects.count(), 1)
+
+    def seed_metrics(self):
+        form = DataUploadForm(files={'json_file': self.upload()})
+        self.assertTrue(form.is_valid(), form.errors)
+        import_records(form.records, self.admin, 'all.json')
+
+    def test_admin_clear_keeps_import_history_offices_and_users(self):
+        self.seed_metrics()
+        self.client.force_login(self.admin)
+        self.assertContains(self.client.get(reverse('data')), 'Clear all uploaded data')
+        response = self.client.post(reverse('data'), {'action': 'clear', 'confirm_clear': 'yes'}, follow=True)
+        self.assertContains(response, '288 metric records cleared')
+        self.assertEqual(MetricRecord.objects.count(), 0)
+        self.assertEqual(DataImport.objects.count(), 1)
+        self.assertEqual(Office.objects.count(), 3)
+        self.assertEqual(User.objects.count(), 2)
+
+    def test_clear_requires_explicit_confirmation_and_get_never_deletes(self):
+        self.seed_metrics()
+        self.client.force_login(self.admin)
+        self.client.get(reverse('data'), {'action': 'clear', 'confirm_clear': 'yes'})
+        self.assertEqual(MetricRecord.objects.count(), 288)
+        response = self.client.post(reverse('data'), {'action': 'clear'}, follow=True)
+        self.assertContains(response, 'Confirm the deletion')
+        self.assertEqual(MetricRecord.objects.count(), 288)
+
+    def test_clear_requires_delete_permission_and_office_assignment(self):
+        self.seed_metrics()
+        for user in (None, self.director):
+            if user:
+                self.client.force_login(user)
+            else:
+                self.client.logout()
+            response = self.client.post(reverse('data'), {'action': 'clear', 'confirm_clear': 'yes'})
+            self.assertEqual(response.status_code, 403)
+        self.director.user_permissions.add(Permission.objects.get(codename='delete_metricrecord'))
+        self.director.office = None
+        self.director.save()
+        self.client.force_login(self.director)
+        self.assertEqual(self.client.post(reverse('data'), {'action': 'clear', 'confirm_clear': 'yes'}).status_code, 403)
+        self.assertEqual(MetricRecord.objects.count(), 288)
+
+    def test_office_clear_cannot_target_other_offices(self):
+        self.seed_metrics()
+        self.director.user_permissions.add(Permission.objects.get(codename='delete_metricrecord'))
+        self.client.force_login(self.director)
+        other_office = Office.objects.exclude(pk=self.office.pk).first()
+        response = self.client.post(reverse('data'), {
+            'action': 'clear', 'confirm_clear': 'yes', 'office_id': other_office.pk,
+        }, follow=True)
+        self.assertContains(response, '96 metric records cleared')
+        self.assertEqual(MetricRecord.objects.count(), 192)
+        self.assertFalse(MetricRecord.objects.filter(office=self.office).exists())
+        self.assertTrue(MetricRecord.objects.filter(office=other_office).exists())
+        self.assertEqual(DataImport.objects.count(), 1)

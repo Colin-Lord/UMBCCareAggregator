@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 
@@ -32,10 +32,26 @@ def dashboard(request):
 
 def data(request):
     allowed = can_upload(request.user)
+    can_clear = request.user.is_authenticated and (
+        request.user.is_superuser or (
+            request.user.office_id and request.user.has_perm('aggregator.delete_metricrecord')
+        )
+    )
     form = DataUploadForm()
     if request.method == 'POST':
+        if request.POST.get('action') == 'clear':
+            if not can_clear:
+                return HttpResponseForbidden('You do not have permission to clear these records.')
+            if request.POST.get('confirm_clear') != 'yes':
+                messages.error(request, 'Confirm the deletion before clearing records.')
+                return redirect('data')
+            to_clear = MetricRecord.objects.all()
+            if not request.user.is_superuser:
+                to_clear = to_clear.filter(office_id=request.user.office_id)
+            deleted_count, _ = to_clear.delete()
+            messages.success(request, f'{deleted_count} metric records cleared. Import history has been kept.')
+            return redirect('data')
         if not allowed:
-            from django.http import HttpResponseForbidden
             return HttpResponseForbidden('An authorized office account is required to upload data.')
         form = DataUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -55,7 +71,7 @@ def data(request):
             records = records.filter(office_id=request.user.office_id) if request.user.office_id else records.none()
             imports = imports.filter(uploaded_by=request.user)
     return render(request, 'aggregator/data.html', {
-        'form': form, 'can_upload': allowed, 'record_count': records.count(),
+        'form': form, 'can_upload': allowed, 'can_clear': can_clear, 'record_count': records.count(),
         'records': records[:50], 'imports': imports.order_by('-uploaded_at')[:10],
     })
 

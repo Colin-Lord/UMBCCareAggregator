@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
         ('aggregator', '0001_initial'),
     ]
 
+    #creates table for a data upload in the sqlitedb
     operations = [
         migrations.CreateModel(
             name='DataImport',
@@ -23,6 +24,7 @@ class Migration(migrations.Migration):
                 ('uploaded_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        #this is rows of data from the data upload table
         migrations.CreateModel(
             name='MetricRecord',
             fields=[
