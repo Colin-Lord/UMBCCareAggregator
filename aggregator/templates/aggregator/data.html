@@ -3,6 +3,74 @@
 {% block title %}Data{% endblock %}
 
 {% block content %}
-    <h1>Data Page</h1>
-    <p>This is the data page.</p>
+    <h1>Office data</h1>
+    <p class="text-muted">Upload monthly metrics to use in your dashboard.</p>
+
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="status">{{ message }}</div>
+    {% endfor %}
+
+    <section class="card mb-4">
+        <div class="card-body">
+            <h2 class="h4">Import JSON data</h2>
+            <p>For a demo, choose <strong>dashboard_metrics.json</strong> from the project's <strong>sample_data</strong> folder. All sample values are fictional.</p>
+            {% if can_upload %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if form.errors %}<div class="alert alert-danger" role="alert">{{ form.non_field_errors }}{{ form.json_file.errors }}</div>{% endif %}
+                    <label for="{{ form.json_file.id_for_label }}" class="form-label">{{ form.json_file.label }}</label>
+                    {{ form.json_file }}
+                    <p class="form-text">{{ form.json_file.help_text }}</p>
+                    <p>Matching office, month, student level, and metric records will be updated. Other records stay in place. The entire file is validated before anything is saved.</p>
+                    <button type="submit" class="btn btn-dark">Import data</button>
+                </form>
+            {% elif not user.is_authenticated %}
+                <p><a href="{% url 'login' %}?next={% url 'data' %}">Sign in</a> with an authorized account to upload or view office data.</p>
+            {% else %}
+                <p>You can view your office's data below. Uploading requires the <strong>Can add metric record</strong> permission and an assigned office. Administrators can import all offices.</p>
+            {% endif %}
+            <details class="mt-3">
+                <summary>Expected file format</summary>
+                <p class="mt-2">A JSON object with <code>schema_version: 1</code> and a <code>records</code> list. Each record needs office_id, office_name, time_period, period_end, student_level, metric, value, unit, and is_demo. Dates describe a complete calendar month. Student level is undergraduate or graduate.</p>
+            </details>
+        </div>
+    </section>
+
+    {% if user.is_authenticated %}
+    <section class="mb-4">
+        <h2 class="h4">Stored records <span class="badge text-bg-secondary">{{ record_count }}</span></h2>
+        <p class="text-muted">Showing the latest 50 records you can access. Rows labeled Demo contain fictional values.</p>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead><tr><th scope="col">Office</th><th scope="col">Month</th><th scope="col">Student level</th><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Unit</th><th scope="col">Source</th></tr></thead>
+                <tbody>{% for record in records %}
+                    <tr><td>{{ record.office.name }}</td><td>{{ record.time_period|date:"M Y" }}</td><td>{{ record.get_student_level_display }}</td><td>{{ record.metric }}</td><td>{{ record.value }}</td><td>{{ record.unit }}</td><td>{% if record.is_demo %}Demo{% else %}Uploaded{% endif %}</td></tr>
+                {% empty %}<tr><td colspan="7">No records yet. Import a JSON file to get started.</td></tr>{% endfor %}</tbody>
+            </table>
+        </div>
+    </section>
+    {% if can_clear and record_count %}
+    <section class="card border-danger mb-4">
+        <div class="card-body">
+            <h2 class="h4">Clear uploaded data</h2>
+            <p>{% if user.is_superuser %}This permanently deletes all {{ record_count }} stored metric records across every office.{% else %}This permanently deletes all {{ record_count }} stored metric records for {{ user.office.name }}.{% endif %} This includes all records, not just the 50 shown above. Import history, offices, user accounts, and source JSON files will be kept.</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="clear">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="confirm-clear" name="confirm_clear" value="yes" required>
+                    <label class="form-check-label" for="confirm-clear">I understand these metric records will be permanently deleted.</label>
+                </div>
+                <button type="submit" class="btn btn-danger">{% if user.is_superuser %}Clear all uploaded data{% else %}Clear my office's data{% endif %}</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+    <section class="mb-4">
+        <h2 class="h4">Recent imports</h2>
+        <ul class="list-group">{% for item in imports %}
+            <li class="list-group-item"><strong>{{ item.filename }}</strong> — {{ item.uploaded_at|date:"M j, Y H:i" }} UTC by {{ item.uploaded_by.username }}. {{ item.created_count }} added, {{ item.updated_count }} updated.</li>
+        {% empty %}<li class="list-group-item">No imports to display.</li>{% endfor %}</ul>
+    </section>
+    {% endif %}
 {% endblock %}
