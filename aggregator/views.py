@@ -27,6 +27,9 @@ def dashboard(request):
 def data(request):
     return render(request, "aggregator/data.html")
 
+def upload_record(request):
+    return render(request, "aggregator/record.html")
+
 def office(request):
     return render(request, "aggregator/office.html")
 

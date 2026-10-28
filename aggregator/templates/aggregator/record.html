@@ -1,0 +1,60 @@
+{% extends "aggregator/base.html" %}
+
+{% block title %}Record{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Add Data Record</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="record_id" class="form-label">Record ID</label>
+                <input type="text" class="form-control" id="record_id" name="record_id" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="office_id" class="form-label">Office ID</label>
+                <input type="number" class="form-control" id="office_id" name="office_id" min="1" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="office_name" class="form-label">Office Name</label>
+                <input type="text" class="form-control" id="office_name" name="office_name" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="time_period" class="form-label">Time Period</label>
+                <input type="text" class="form-control" id="time_period" name="time_period" placeholder="e.g. Fall 2026" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="period_end" class="form-label">Period End</label>
+                <input type="date" class="form-control" id="period_end" name="period_end" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="student_level" class="form-label">Student Level</label>
+                <input type="text" class="form-control" id="student_level" name="student_level" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="metric" class="form-label">Metric</label>
+                <input type="text" class="form-control" id="metric" name="metric" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="value" class="form-label">Value</label>
+                <input type="number" class="form-control" id="value" name="value" step="any" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="unit" class="form-label">Unit</label>
+                <input type="text" class="form-control" id="unit" name="unit" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-submit mt-4">Submit Record</button>
+    </form>
+{% endblock %}

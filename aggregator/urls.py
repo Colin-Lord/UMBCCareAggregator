@@ -11,5 +11,8 @@ urlpatterns = [
     path("data/", views.data, name="data"),    
     path("office/", views.office, name="office"),    
     path("users/", views.users, name="users"),
-    path("contact/success/", views.contact_success, name="contact_success")  
+    path("single-record", views.upload_record, name="upload_record"),
+    path("contact/success/", views.contact_success, name="contact_success") 
+
+
 ]
