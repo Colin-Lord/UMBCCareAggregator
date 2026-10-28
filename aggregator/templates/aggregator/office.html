@@ -3,6 +3,9 @@
 {% block title %}Office{% endblock %}
 
 {% block content %}
-    <h1>Office Page</h1>
-    <p>This is the office page.</p>
+    {% if user.is_authenticated %}
+        <p>Office: {{ user.office }}</p>
+    {% else %}
+        <p>Please log in to access user features.</p>
+    {% endif %}
 {% endblock %}
