@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'aggregator'
+    'aggregator',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,4 @@ MAILERS = {
 
 AUTH_USER_MODEL = "aggregator.User"
 LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

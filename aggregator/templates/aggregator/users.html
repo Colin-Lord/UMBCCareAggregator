@@ -3,6 +3,11 @@
 {% block title %}Users{% endblock %}
 
 {% block content %}
-    <h1>User Page</h1>
-    <p>This is the user page.</p>
+
+    {% if user.is_authenticated %}
+        <p>Username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+    {% else %}
+        <p>Please log in to access user features.</p>
+    {% endif %}
 {% endblock %}
