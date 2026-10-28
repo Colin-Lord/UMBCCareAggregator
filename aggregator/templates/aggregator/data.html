@@ -3,7 +3,18 @@
 {% block title %}Data{% endblock %}
 
 {% block content %}
-    <h1>Data Page</h1>
-    <p>This is the data page.</p>
-    <a href="{% url 'upload_record' %}" class="btn btn-submit">Upload single record</a>
+    <section class="data-page">
+        <div class="data-panel">
+            <a href="{% url 'upload_record' %}" class="btn btn-submit">
+                Upload single record
+            </a>
+            <form method="post" enctype="multipart/form-data" class="data-upload-form">
+                {% csrf_token %}
+                <label for="csv_file" class="form-label">Choose a CSV file to upload</label>
+                <input type="file" id="csv_file" name="csv_file" class="form-control"
+                       accept=".csv,text/csv" required>
+                <button type="submit" class="btn btn-submit">Upload file</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}

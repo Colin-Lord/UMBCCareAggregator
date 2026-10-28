@@ -11,8 +11,12 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
     <!-- Custom CSS for UMBC colors -->
-    <link rel="stylesheet" href="{% static 'aggregator/style.css' %}">
+    <link rel="stylesheet" href="{% static 'aggregator/style.css' %}?v=2">
+
 </head>
 <body>
 
@@ -24,6 +28,10 @@
             <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
                 <img src="{% static 'aggregator/images/umbc_crest.png' %}" alt="" height="40">
                 <span>UMBC</span>
+                {% if user.is_authenticated %}
+                    <i class="fa-solid fa-user ms-2" aria-hidden="true"></i>
+                    <span>{{ user.get_username }}</span>
+                {% endif %}
             </a>
 
             <!-- Mobile Menu Button -->

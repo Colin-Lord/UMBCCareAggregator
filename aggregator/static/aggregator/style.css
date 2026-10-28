@@ -244,3 +244,42 @@
     align-self: flex-end;
     margin-top: 30px;
 }
+
+/************************************************************************/
+/* Data page */
+.data-page {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem 0;
+}
+
+.data-panel {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, 900px);
+    min-height: 450px;
+    padding: 1.5rem;
+    border: 2px solid var(--dark-grey);
+    border-radius: 12px;
+    background: #f8f9fa;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.data-panel > .btn-submit {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.data-upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: min(100%, 500px);
+}
+
+.data-upload-form .btn-submit {
+    align-self: center;
+}
