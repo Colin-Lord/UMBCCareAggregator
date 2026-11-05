@@ -12,7 +12,7 @@
                 {% csrf_token %}
                 <label for="csv_file" class="form-label">Choose a CSV file to upload</label>
                 <input type="file" id="csv_file" name="csv_file" class="form-control"
-                       accept=".csv,text/csv" required>
+                       accept=".csv,.json" required>
                 <button type="submit" class="btn btn-submit">Upload file</button>
             </form>
         </div>
