@@ -47,32 +47,54 @@
     --bs-btn-active-border-color: var(--gold);
 }
 
+.btn-inverse {
+    --bs-btn-color: var(--gold);
+    --bs-btn-bg: var(--black);
+    --bs-btn-border-color: var(--gold);
+
+    --bs-btn-hover-color: var(--black);
+    --bs-btn-hover-bg: var(--gold);
+    --bs-btn-hover-border-color: var(--black);
+
+    --bs-btn-active-color: var(--black);
+    --bs-btn-active-bg: var(--gold);
+    --bs-btn-active-border-color: var(--black);
+}
+
 /*************************************************************************************/
-/* Form dropdown */
+/* Default form dropdown */
 .form-select {
-    color: white;
-    background-color: var(--black);
+    color: var(--black);
+    background-color: white;
     border: 1px solid var(--gold);
 }
 
-/* Dropdown hover */
-.form-select:hover {
-    border-color: var(--gold);
-    cursor: pointer;
+/* Black and gold dropdown button */
+.form-select.btn-inverse {
+    background-color: var(--black);
+    color: var(--gold);
+    border: 1px solid var(--gold);
 }
 
-/* Dropdown focus */
-.form-select:focus {
-    color: var(--gold);
+/* Focus */
+.form-select.btn-inverse:focus {
     background-color: var(--black);
+    color: var(--gold);
     border-color: var(--gold);
-    box-shadow: 0 0 0 0.25rem rgba(253, 181, 21, 0.25);
+    box-shadow: none;
 }
 
 /* Dropdown options */
-.form-select option {
-    color: white;
-    background-color: var(--dark-grey);
+.form-select.btn-inverse option {
+    background-color: white;
+    color: var(--black);
+}
+
+.form-select.btn-inverse:hover {
+    background-color: var(--gold);
+    color: var(--black);
+    border-color: var(--black);
+    cursor: pointer;
 }
 
 /************************************************************************/
@@ -282,4 +304,32 @@
 
 .data-upload-form .btn-submit {
     align-self: center;
+}
+
+/*************************************************************/
+/*Dashboard elements*/
+.dashboard-container {
+    border: 2px solid #333;
+    border-radius: 20px;
+    padding: 25px;
+    background-color: white;
+}
+
+.dashboard-card {
+    border: 2px solid #333;
+    border-radius: 12px;
+    background-color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.kpi-card {
+    min-height: 80px;
+}
+
+.chart-card {
+    min-height: 180px;
 }

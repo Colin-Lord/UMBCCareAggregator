@@ -5,13 +5,125 @@
 {% block content %}
     <h1>Dashboard Page</h1>
     <p>This is dashboard page</p>
-    <div class="mb-3">
-    <label for="filter_select" class="form-label">Filter:</label>
 
-    <select class="form-select w-25" id="filter_select" name="filter" required>
-        <option value="" selected disabled>Choose a filter</option>
-        <option value="date">Date</option>
-        <option value="student_type">Student Type</option>
-    </select>
+    <div class="container my-4">
+
+        <!-- Filter aligned right -->
+    <div class="d-flex justify-content-end mb-3">
+    <div class="dropdown">
+        <button class="btn btn-inverse dropdown-toggle"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside">
+            Filter By
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-end p-3">
+
+            <form method="get">
+
+                <!-- Student Level -->
+                <details>
+                    <summary>Student Level</summary>
+                    <select name="student_level" class="form-select mt-2">
+                        <option value="">All Students</option>
+                        <option value="undergraduate">Undergraduate</option>
+                        <option value="graduate">Graduate</option>
+                    </select>
+                </details>
+
+                <hr>
+
+                <!-- Date -->
+                <details>
+                    <summary>Date</summary>
+
+                    <label class="mt-2">Start Date</label>
+                    <input type="date" name="start_date"
+                           class="form-control">
+
+                    <label class="mt-2">End Date</label>
+                    <input type="date" name="end_date"
+                           class="form-control">
+                </details>
+
+                <hr>
+
+                <!-- Apply and Clear -->
+                <button type="submit" class="btn btn-primary w-100 mb-2">
+                    Apply Filters
+                </button>
+
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-outline-secondary w-100">
+                    Clear Filters
+                </a>
+
+            </form>
+        </div>
+    </div>
 </div>
+
+
+        <!-- Main dashboard -->
+        <div class="dashboard-container">
+
+            <!-- Row 1: KPIs -->
+            <div class="row g-3 mb-3">
+
+                <div class="col-md-4">
+                    <div class="dashboard-card kpi-card">
+                        KPI 1
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="dashboard-card kpi-card">
+                        KPI 2
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="dashboard-card kpi-card">
+                        KPI 3
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Row 2: Bar and line chart -->
+            <div class="row g-3 mb-3">
+
+                <div class="col-md-4">
+                    <div class="dashboard-card chart-card">
+                        Bar Chart
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="dashboard-card chart-card">
+                        Line Chart (Data Over Time)
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Row 3: Two charts -->
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <div class="dashboard-card chart-card">
+                        Line Chart
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="dashboard-card chart-card">
+                        Horizontal Bar Chart
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 {% endblock %}
