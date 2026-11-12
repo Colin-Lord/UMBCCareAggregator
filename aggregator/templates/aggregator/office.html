@@ -4,7 +4,59 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <p>Office: {{ user.office }}</p>
+        <div class="container mt-4">
+
+            <h3>Your Office: {{ user.office }}</h3>
+
+            <!-- Office Members -->
+            <div class="border rounded p-4 mb-5">
+                <h4>Office Member Data</h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td>{{ member.username }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.role }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Update Logs -->
+            <div class="border rounded p-4">
+                <h4>Data Update Logs</h4>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Uploaded By</th>
+                            <th>Date</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.user.username }}</td>
+                            <td>{{ log.date }}</td>
+                            <td>{{ log.comment }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     {% else %}
         <p>Please log in to access user features.</p>
     {% endif %}

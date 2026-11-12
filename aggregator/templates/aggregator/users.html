@@ -1,13 +1,105 @@
+
 {% extends "aggregator/base.html" %}
 
 {% block title %}Users{% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
 
-    {% if user.is_authenticated %}
-        <p>Username: {{ user.username }}</p>
-        <p>Email: {{ user.email }}</p>
-    {% else %}
-        <p>Please log in to access user features.</p>
-    {% endif %}
+<div class="container mt-4">
+
+    <!-- View By Dropdown -->
+    <div class="d-flex justify-content-end mb-2">
+        <div class="dropdown">
+            <button class="btn btn-inverse dropdown-toggle"
+                    data-bs-toggle="dropdown">
+                View By
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#">Name</a></li>
+                <li><a class="dropdown-item" href="#">Email</a></li>
+                <li><a class="dropdown-item" href="#">Office</a></li>
+                <li><a class="dropdown-item" href="#">User Level</a></li>
+            </ul>
+        </div>
+    </div>
+        <!-- Users Table -->
+        <div class="border rounded p-3">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Office</th>
+                        <th>User Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in users %}
+                    <tr>
+                        <td>{{ account.username }}</td>
+                        <td>{{ account.email }}</td>
+                        <td>{{ account.office }}</td>
+                        <td>{{ account.level }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No users found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Manage Users -->
+    <h5 class="text-center mb-4">Manage Users</h5>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="d-flex justify-content-around mb-4">
+
+            <div>
+                <input type="radio" name="action" value="delete">
+                <label>Delete User</label>
+            </div>
+
+            <div>
+                <input type="radio" name="action" value="edit">
+                <label>Edit User Level</label>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-4">
+                <input type="text" name="username"
+                       class="form-control"
+                       placeholder="Enter Name">
+            </div>
+
+            <div class="col-md-4">
+                <select name="level" class="form-select btn-inverse">
+                    <option selected disabled>Choose User Level</option>
+                    <option value="staff">Staff</option>
+                    <option value="director">Director</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-submit">
+                Submit
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% else %}
+    <p>Please log in to access user features.</p>
+{% endif %}
 {% endblock %}
