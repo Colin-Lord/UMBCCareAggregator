@@ -38,7 +38,9 @@ def data(request):
                 records = process_upload(uploaded)
                 if validate_data(records, request.user): #validate data
                     print("Data is valid!")
+
                     #TODO Convert data into models on the database if valid
+                    data_to_model(records, request.user)
                     
 
             # TODO: make this code display an error message on the Data page
@@ -120,3 +122,29 @@ def validate_data(data, user):
    
     # if it made it through everything, the data is valid
     return True
+
+def data_to_model(data, user):
+    #this function should only be called if data is already validated
+
+
+    new_file = CSVFile(filename="testname",office = user.office, user=user)
+    new_file.save()
+
+    office_metrics = list(user.office.metrics.all())
+
+    for record in data:
+        new_record = DataRecord(timeframe="1969-01-01",csv_file = new_file)
+        new_record.save()
+
+        for key in list(record):
+            
+            #TODO extremely inefficient, refactor later
+            for office_metric in office_metrics:
+                if key == office_metric.name:
+                    assign_metric = office_metric
+
+
+            new_value = MetricValue(value = record[key], data_record = new_record, metric = assign_metric)
+            new_value.save()
+
+    print(new_file.filename + " saved!")
