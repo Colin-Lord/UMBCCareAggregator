@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from csv import DictReader, DictWriter
 from json import loads
+from aggregator.models import CSVFile, DataRecord, MetricValue, User, Office, Metric
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -26,6 +28,7 @@ def contact_success(request):
 def dashboard(request):
     return render(request, "aggregator/dashboard.html")
 
+@login_required
 def data(request):
     if request.method == "POST":
         uploaded = request.FILES.get("csv_file")
@@ -33,11 +36,9 @@ def data(request):
         if uploaded:
             try:
                 records = process_upload(uploaded)
-
-                for record in records:
-
-                    # TODO: this code prints all the dictionaries created by the file; delete or comment out later
-                    print(record, "\n\n")
+                if validate_data(records, request.user): #validate data
+                    print("Data is valid!")
+                    #TODO Convert data into models on the database if valid
                     
 
             # TODO: make this code display an error message on the Data page
@@ -75,3 +76,47 @@ def process_upload(uploaded):
 
     else:
         raise ValueError("Unsupported file type")
+
+
+def TEST_setup_models(user):
+    #this function is only used to setup tables in order to test data validation
+    #use `python manage.py flush` before this to clear all data
+
+    #create office and assign to logged in user
+    new_office = Office(name = "Retriever Essentials")
+    new_office.save()
+    user.office = new_office
+    user.save()
+
+    users_office = user.office
+
+    #create metrics and assign to user's  office
+    metrics_to_add = ["record_id","office_id","office_name","period_start","period_end","student_level","metric","value","unit"]
+    for metric_o_o in metrics_to_add:
+        new_metric = Metric(name=metric_o_o)
+        new_metric.save()
+        new_metric.offices.set([users_office])
+
+
+
+def validate_data(data, user):
+    #run once to set up test data
+    #TEST_setup_models(user)
+    
+    #loop through data records
+    for record in data:
+
+        #invalid if the number of metrics don't match
+        if len(list(user.office.metrics.all())) != len(list(record)):
+            print("INVALID DATA. invalid number of metrics")
+            return False
+
+        #invalid if a metric from office is not in the data
+        for metric in list(user.office.metrics.all()):
+            if metric.name not in list(record):
+                print("INVALID DATA. " + metric.name + " not in file.")
+                return False
+
+   
+    # if it made it through everything, the data is valid
+    return True
