@@ -100,6 +100,10 @@ def TEST_setup_models(user):
         new_metric.offices.set([users_office])
 
 
+#TODO make it so the standard columns (record_id, office_id, etc) aren't treated as office specific metrics.
+#TODO essentially only check if the value in the metric column matches a metric in that office
+
+#TODO the current way this validates is not correct
 
 def validate_data(data, user):
     #run once to set up test data
