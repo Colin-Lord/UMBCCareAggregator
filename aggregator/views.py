@@ -58,7 +58,20 @@ def login(request):
     return render(request, "accounts/login.html")
 
 def users(request):
-    all_users = User.objects.all()
+
+    # get the criteria to sort the users by
+    sort_by = request.GET.get("sort", "username")
+    sort_options = {
+        "name": "username",
+        "email": "email",
+        "office": "office__name",
+        "level": "level",
+    }
+
+    # sort the users, default is username
+    order = sort_options.get(sort_by, "username")
+
+    all_users = User.objects.all().order_by(order)
 
     return render(request, "aggregator/users.html", {"users": all_users})
 
