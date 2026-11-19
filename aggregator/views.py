@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from csv import DictReader, DictWriter
 from json import loads
+from django.contrib.auth import get_user_model
+from .models import Office, User, CSVFile, DataRecord, Metric, MetricValue
 
 # Create your views here.
 def index(request):
@@ -56,7 +58,9 @@ def login(request):
     return render(request, "accounts/login.html")
 
 def users(request):
-    return render(request, "aggregator/users.html")
+    all_users = User.objects.all()
+
+    return render(request, "aggregator/users.html", {"users": all_users})
 
 
 # function to process the data upload
