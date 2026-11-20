@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from csv import DictReader, DictWriter
 from json import loads
-from django.contrib.auth import get_user_model
+from django.contrib import messages
 from .models import Office, User, CSVFile, DataRecord, Metric, MetricValue
 
 # Create your views here.
@@ -51,13 +51,45 @@ def data(request):
 def upload_record(request):
     return render(request, "aggregator/record.html")
 
+
 def office(request):
-    return render(request, "aggregator/office.html")
+    members = User.objects.filter(
+        office=request.user.office
+    )
+
+    return render(request, "aggregator/office.html", {"members": members})
 
 def login(request):
     return render(request, "accounts/login.html")
 
 def users(request):
+
+    # deal with user deletion or level editing if submit was pressed
+    if request.method == "POST":
+        action = request.POST.get("action")
+        username = request.POST.get("username")
+        level = request.POST.get("level")
+
+        try:
+            account = User.objects.get(username=username)
+
+            if action == "delete":
+                account.delete()
+                messages.success(request, "User deleted successfully.")
+
+            elif action == "edit":
+                if level in ["staff", "director", "admin"]:
+                    account.level = level
+                    account.save()
+                    messages.success(request, "User level updated successfully.")
+                else:
+                    messages.error(request, "Invalid user level.")
+
+            else:
+                messages.error(request, "Invalid action.")
+
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
 
     # get the criteria to sort the users by
     sort_by = request.GET.get("sort", "username")
