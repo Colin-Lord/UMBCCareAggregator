@@ -49,7 +49,17 @@ def data(request):
     return render(request, "aggregator/data.html")
 
 def upload_record(request):
-    return render(request, "aggregator/record.html")
+    if request.user.office:
+        office_name = request.user.office.name 
+    else:
+        office_name = ""
+
+    metrics = OFFICE_METRICS.get(office_name, {})
+
+    context = {
+        "metrics": metrics,
+    }
+    return render(request, "aggregator/record.html", context)
 
 
 def office(request):
@@ -124,3 +134,42 @@ def process_upload(uploaded):
 
     else:
         raise ValueError("Unsupported file type")
+
+
+# used to show metrics for the individual data upload
+OFFICE_METRICS = {
+    "Retriever Essentials": {
+        "service_interactions": "Service Interactions",
+        "unique_students": "Unique Students",
+        "referrals_made": "Referrals Made",
+        "food_distributed_lb": "Food Distributed (lb)",
+    },
+
+    "Retriever CARE": {
+        "students_assisted": "Students Assisted",
+        "care_referrals_received": "CARE Referrals Received",
+        "case_management_meetings": "Case Management Meetings",
+        "cases_resolved": "Cases Resolved",
+    },
+
+    "Pride Center": {
+        "center_visits": "Center Visits",
+        "event_attendance": "Event Attendance",
+        "lgbtq_programs_hosted": "LGBTQ+ Programs Hosted",
+        "student_satisfaction": "Student Satisfaction",
+    },
+
+    "Mosaic Center": {
+        "center_visits": "Center Visits",
+        "cultural_programs_hosted": "Cultural Programs Hosted",
+        "event_attendance": "Event Attendance",
+        "diversity_and_inclusion_workshops": "Diversity and Inclusion Workshops",
+    },
+
+    "Graduate Student Life": {
+        "graduate_student_participation": "Graduate Student Participation",
+        "professional_development_workshops": "Professional Development Workshops",
+        "graduate_student_events_hosted": "Graduate Student Events Hosted",
+        "student_satisfaction": "Student Satisfaction",
+    },
+}
