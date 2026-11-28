@@ -4,6 +4,8 @@ from csv import DictReader, DictWriter
 from json import loads
 from aggregator.models import CSVFile, DataRecord, MetricValue, User, Office, Metric
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Office, User, CSVFile, DataRecord, Metric, MetricValue
 
 # Create your views here.
 def index(request):
@@ -52,14 +54,61 @@ def data(request):
 def upload_record(request):
     return render(request, "aggregator/record.html")
 
+
 def office(request):
-    return render(request, "aggregator/office.html")
+    members = User.objects.filter(
+        office=request.user.office
+    )
+
+    return render(request, "aggregator/office.html", {"members": members})
 
 def login(request):
     return render(request, "accounts/login.html")
 
 def users(request):
-    return render(request, "aggregator/users.html")
+
+    # deal with user deletion or level editing if submit was pressed
+    if request.method == "POST":
+        action = request.POST.get("action")
+        username = request.POST.get("username")
+        level = request.POST.get("level")
+
+        try:
+            account = User.objects.get(username=username)
+
+            if action == "delete":
+                account.delete()
+                messages.success(request, "User deleted successfully.")
+
+            elif action == "edit":
+                if level in ["staff", "director", "admin"]:
+                    account.level = level
+                    account.save()
+                    messages.success(request, "User level updated successfully.")
+                else:
+                    messages.error(request, "Invalid user level.")
+
+            else:
+                messages.error(request, "Invalid action.")
+
+        except User.DoesNotExist:
+            messages.error(request, "User not found.")
+
+    # get the criteria to sort the users by
+    sort_by = request.GET.get("sort", "username")
+    sort_options = {
+        "name": "username",
+        "email": "email",
+        "office": "office__name",
+        "level": "level",
+    }
+
+    # sort the users, default is username
+    order = sort_options.get(sort_by, "username")
+
+    all_users = User.objects.all().order_by(order)
+
+    return render(request, "aggregator/users.html", {"users": all_users})
 
 
 # function to process the data upload
