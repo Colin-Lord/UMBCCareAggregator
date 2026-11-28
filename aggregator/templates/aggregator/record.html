@@ -9,52 +9,66 @@
         {% csrf_token %}
 
         <div class="row g-3">
-            <div class="col-md-6">
-                <label for="record_id" class="form-label">Record ID</label>
-                <input type="text" class="form-control" id="record_id" name="record_id" required>
+
+            <!-- Office Name -->
+            <div class="col-md-12">
+                <label for="office_name" class="form-label">Office</label>
+                <input type="text" class="form-control"
+                       id="office_name" name="office_name"
+                       value="{{ user.office.name }}" readonly>
             </div>
 
+            <!-- Period Start -->
             <div class="col-md-6">
-                <label for="office_id" class="form-label">Office ID</label>
-                <input type="number" class="form-control" id="office_id" name="office_id" min="1" required>
+                <label for="period_start" class="form-label">Period Start</label>
+                <input type="date" class="form-control"
+                       id="period_start" name="period_start" required>
             </div>
 
-            <div class="col-md-6">
-                <label for="office_name" class="form-label">Office Name</label>
-                <input type="text" class="form-control" id="office_name" name="office_name" required>
-            </div>
-
-            <div class="col-md-6">
-                <label for="time_period" class="form-label">Time Period</label>
-                <input type="text" class="form-control" id="time_period" name="time_period" placeholder="e.g. Fall 2026" required>
-            </div>
-
+            <!-- Period End -->
             <div class="col-md-6">
                 <label for="period_end" class="form-label">Period End</label>
-                <input type="date" class="form-control" id="period_end" name="period_end" required>
+                <input type="date" class="form-control"
+                       id="period_end" name="period_end" required>
             </div>
 
+            <!-- Student Level -->
             <div class="col-md-6">
                 <label for="student_level" class="form-label">Student Level</label>
-                <input type="text" class="form-control" id="student_level" name="student_level" required>
+                <select class="form-select" id="student_level"
+                        name="student_level" required>
+                    <option value="" disabled selected>Select Student Level</option>
+                    <option value="graduate">Graduate</option>
+                    <option value="undergraduate">Undergraduate</option>
+                </select>
             </div>
 
+            <!-- Metric -->
             <div class="col-md-6">
                 <label for="metric" class="form-label">Metric</label>
-                <input type="text" class="form-control" id="metric" name="metric" required>
+                <select class="form-select" id="metric"
+                        name="metric" required>
+
+                    <option value="" disabled selected>Select Metric</option>
+
+                    {% for value, label in metrics.items %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+
+                </select>
             </div>
 
+            <!-- Value -->
             <div class="col-md-6">
                 <label for="value" class="form-label">Value</label>
-                <input type="number" class="form-control" id="value" name="value" step="any" required>
+                <input type="number" class="form-control"
+                       id="value" name="value" step="any" required>
             </div>
 
-            <div class="col-md-6">
-                <label for="unit" class="form-label">Unit</label>
-                <input type="text" class="form-control" id="unit" name="unit" required>
-            </div>
         </div>
 
-        <button type="submit" class="btn btn-submit mt-4">Submit Record</button>
+        <button type="submit" class="btn btn-submit mt-4">
+            Submit Record
+        </button>
     </form>
 {% endblock %}

@@ -52,7 +52,32 @@ def data(request):
     return render(request, "aggregator/data.html")
 
 def upload_record(request):
-    return render(request, "aggregator/record.html")
+    if request.user.office:
+        office_name = request.user.office.name
+    else:
+        office_name = ""
+
+    metrics = OFFICE_METRICS.get(office_name, {})
+
+    if request.method == "POST":
+        period_start = request.POST.get("period_start")
+        period_end = request.POST.get("period_end")
+        student_level = request.POST.get("student_level")
+        metric = request.POST.get("metric")
+        value = request.POST.get("value")
+
+        # Check if metric belongs to the user's office
+        if metric not in metrics:
+            messages.error(request, "Invalid metric for your office.")
+            return redirect("upload_record")
+
+        # Automatically retrieve the corresponding unit
+        unit = METRIC_UNITS[metric]
+
+    context = {
+        "metrics": metrics,
+    }
+    return render(request, "aggregator/record.html", context)
 
 
 def office(request):
@@ -127,6 +152,75 @@ def process_upload(uploaded):
 
     else:
         raise ValueError("Unsupported file type")
+
+
+# used to show metrics for the individual data upload
+OFFICE_METRICS = {
+    "Retriever Essentials": {
+        "service_interactions": "Service Interactions",
+        "unique_students": "Unique Students",
+        "referrals_made": "Referrals Made",
+        "food_distributed_lb": "Food Distributed (lb)",
+    },
+
+    "Retriever CARE": {
+        "students_assisted": "Students Assisted",
+        "care_referrals_received": "CARE Referrals Received",
+        "case_management_meetings": "Case Management Meetings",
+        "cases_resolved": "Cases Resolved",
+    },
+
+    "Pride Center": {
+        "center_visits": "Center Visits",
+        "event_attendance": "Event Attendance",
+        "lgbtq_programs_hosted": "LGBTQ+ Programs Hosted",
+        "student_satisfaction": "Student Satisfaction",
+    },
+
+    "Mosaic Center": {
+        "center_visits": "Center Visits",
+        "cultural_programs_hosted": "Cultural Programs Hosted",
+        "event_attendance": "Event Attendance",
+        "diversity_and_inclusion_workshops": "Diversity and Inclusion Workshops",
+    },
+
+    "Graduate Student Life": {
+        "graduate_student_participation": "Graduate Student Participation",
+        "professional_development_workshops": "Professional Development Workshops",
+        "graduate_student_events_hosted": "Graduate Student Events Hosted",
+        "student_satisfaction": "Student Satisfaction",
+    },
+}
+
+# used to show a metric's corresponding units for the individual data upload
+METRIC_UNITS = {
+    # Retriever Essentials
+    "service_interactions": "interactions",
+    "unique_students": "students",
+    "referrals_made": "referrals",
+    "food_distributed_lb": "lb",
+
+    # Retriever CARE
+    "students_assisted": "students",
+    "care_referrals_received": "referrals",
+    "case_management_meetings": "meetings",
+    "cases_resolved": "cases",
+
+    # Pride Center
+    "center_visits": "visits",
+    "event_attendance": "attendees",
+    "lgbtq_programs_hosted": "programs",
+    "student_satisfaction": "percentage",
+
+    # Mosaic Center
+    "cultural_programs_hosted": "programs",
+    "diversity_and_inclusion_workshops": "workshops",
+
+    # Graduate Student Life
+    "graduate_student_participation": "students",
+    "professional_development_workshops": "workshops",
+    "graduate_student_events_hosted": "events",
+}
 
 
 def TEST_setup_models(user):
