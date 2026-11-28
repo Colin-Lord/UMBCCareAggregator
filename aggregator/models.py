@@ -70,7 +70,7 @@ class Metric(models.Model):
         return self.name
 
 class MetricValue(models.Model): # i changed the name from what was on our ER diagram to be clearer
-    value = models.FloatField()
+    value = models.CharField(max_length=255, unique=True)
 
     data_record = models.ForeignKey(
         DataRecord,

@@ -7,6 +7,13 @@
         <div class="container mt-4">
 
             <h3>Your Office: {{ user.office }}</h3>
+            
+            <!-- Office Metrics-->
+            <div class="border rounded p-4 mb-5">
+                <h4>Office Metrics</h4>
+                
+                {{ user.office.metrics.all|join:", " }}
+            </div>
 
             <!-- Office Members -->
             <div class="border rounded p-4 mb-5">
