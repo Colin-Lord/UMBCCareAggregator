@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from csv import DictReader, DictWriter
 from json import loads
+from aggregator.models import CSVFile, DataRecord, MetricValue, User, Office, Metric
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Office, User, CSVFile, DataRecord, Metric, MetricValue
 
@@ -28,6 +30,7 @@ def contact_success(request):
 def dashboard(request):
     return render(request, "aggregator/dashboard.html")
 
+@login_required
 def data(request):
     if request.method == "POST":
         uploaded = request.FILES.get("csv_file")
@@ -35,11 +38,11 @@ def data(request):
         if uploaded:
             try:
                 records = process_upload(uploaded)
+                if validate_data(records, request.user): #validate data
+                    print("Data is valid!")
 
-                for record in records:
-
-                    # TODO: this code prints all the dictionaries created by the file; delete or comment out later
-                    print(record, "\n\n")
+                    #TODO Convert data into models on the database if valid
+                    data_to_model(records, request.user)
                     
 
             # TODO: make this code display an error message on the Data page
@@ -218,3 +221,77 @@ METRIC_UNITS = {
     "professional_development_workshops": "workshops",
     "graduate_student_events_hosted": "events",
 }
+
+
+def TEST_setup_models(user):
+    #this function is only used to setup tables in order to test data validation
+    #use `python manage.py flush` before this to clear all data
+
+    #create office and assign to logged in user
+    new_office = Office(name = "Retriever Essentials")
+    new_office.save()
+    user.office = new_office
+    user.save()
+
+    users_office = user.office
+
+    #create metrics and assign to user's  office
+    metrics_to_add = ["record_id","office_id","office_name","period_start","period_end","student_level","metric","value","unit"]
+    for metric_o_o in metrics_to_add:
+        new_metric = Metric(name=metric_o_o)
+        new_metric.save()
+        new_metric.offices.set([users_office])
+
+
+#TODO make it so the standard columns (record_id, office_id, etc) aren't treated as office specific metrics.
+#TODO essentially only check if the value in the metric column matches a metric in that office
+
+#TODO the current way this validates is not correct
+
+def validate_data(data, user):
+    #run once to set up test data
+    #TEST_setup_models(user)
+    
+    #loop through data records
+    for record in data:
+
+        #invalid if the number of metrics don't match
+        if len(list(user.office.metrics.all())) != len(list(record)):
+            print("INVALID DATA. invalid number of metrics")
+            return False
+
+        #invalid if a metric from office is not in the data
+        for metric in list(user.office.metrics.all()):
+            if metric.name not in list(record):
+                print("INVALID DATA. " + metric.name + " not in file.")
+                return False
+
+   
+    # if it made it through everything, the data is valid
+    return True
+
+def data_to_model(data, user):
+    #this function should only be called if data is already validated
+
+
+    new_file = CSVFile(filename="testname",office = user.office, user=user)
+    new_file.save()
+
+    office_metrics = list(user.office.metrics.all())
+
+    for record in data:
+        new_record = DataRecord(timeframe="1969-01-01",csv_file = new_file)
+        new_record.save()
+
+        for key in list(record):
+            
+            #TODO extremely inefficient, refactor later
+            for office_metric in office_metrics:
+                if key == office_metric.name:
+                    assign_metric = office_metric
+
+
+            new_value = MetricValue(value = record[key], data_record = new_record, metric = assign_metric)
+            new_value.save()
+
+    print(new_file.filename + " saved!")
